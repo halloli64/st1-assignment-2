@@ -1,0 +1,93 @@
+SmartCare Community Clinic Domain Model Discussion Log
+
+User Request:
+I am modelling a simple domain model for the SmartCare community clinic.
+Using ONLY the confirmed requirements FR-01 to FR-10 below, suggest:
+1. The main domain classes needed.
+2. The main responsibilities of each class.
+3. The relationships between the classes and their multiplicities.
+For every class and relationship you suggest, give the relevant requirement ID(s) that support your suggestion.
+Keep the model simple and suitable for the first version of a small community clinic. Do not invent requirements or add unnecessary manager, controller or engine classes.
+
+Requirements:
+FR-01: Manage patient records.
+FR-02: Search for patients.
+FR-03: Manage practitioner profiles.
+FR-04: Manage practitioner availability.
+FR-05: Create appointments using a patient, practitioner and available time.
+FR-06: Prevent double booking.
+FR-07: Reschedule/edit appointments while maintaining history.
+FR-08: Cancel appointments.
+FR-09: Retain appointments for viewing and reporting.
+FR-10: View practitioner schedules and appointment status.
+
+Copilot Response:
+
+MAIN DOMAIN CLASSES
+
+Class: Patient
+Responsibilities: Store and maintain patient record details; support patient lookup/search.
+Requirements: FR-01, FR-02
+
+Class: Practitioner
+Responsibilities: Store practitioner profile details; maintain practitioner availability; support viewing schedules.
+Requirements: FR-03, FR-04, FR-10
+
+Class: AvailabilitySlot
+Responsibilities: Represent a practitioner's available date/time period that can be used for booking appointments.
+Requirements: FR-04, FR-05
+
+Class: Appointment
+Responsibilities: Record bookings between patients and practitioners; store appointment date/time and status; support rescheduling, cancellation, history retention, and reporting.
+Requirements: FR-05, FR-06, FR-07, FR-08, FR-09, FR-10
+
+Class: AppointmentHistory
+Responsibilities: Keep a record of appointment changes (e.g., reschedule/edit actions) to preserve history over time.
+Requirements: FR-07
+
+RELATIONSHIPS AND MULTIPLICITIES
+
+Relationship: Patient - Appointment
+Multiplicity: Patient (1) to Appointment (0..*)
+Reason: A patient may have many appointments; each appointment is for exactly one patient.
+Requirements: FR-05, FR-09
+
+Relationship: Practitioner - Appointment
+Multiplicity: Practitioner (1) to Appointment (0..*)
+Reason: A practitioner may have many appointments; each appointment is with exactly one practitioner.
+Requirements: FR-05, FR-10
+
+Relationship: Practitioner - AvailabilitySlot
+Multiplicity: Practitioner (1) to AvailabilitySlot (0..*)
+Reason: A practitioner can define multiple available time slots. Each slot belongs to one practitioner.
+Requirements: FR-04
+
+Relationship: Appointment - AvailabilitySlot
+Multiplicity: Appointment (1) to AvailabilitySlot (1)
+Reason: An appointment is created using an available time slot. This also helps support prevention of double booking by ensuring a slot is allocated to at most one appointment.
+Requirements: FR-05, FR-06
+
+Relationship: Appointment - AppointmentHistory
+Multiplicity: Appointment (1) to AppointmentHistory (0..*)
+Reason: An appointment can have multiple historical change records; each history record belongs to one appointment.
+Requirements: FR-07
+
+Relationship: Patient - Practitioner
+Multiplicity: Many-to-many (via Appointment)
+Reason: Patients and practitioners become associated through appointments rather than a direct relationship.
+Requirements: FR-05
+
+SIMPLE DOMAIN MODEL
+
+Patient 1 -------- 0..* Appointment 0..* -------- 1 Practitioner
+                           |
+                           | 1
+                           |
+                           1
+                    AvailabilitySlot
+
+Appointment 1 -------- 0..* AppointmentHistory
+
+Practitioner 1 -------- 0..* AvailabilitySlot
+
+End of Log.
